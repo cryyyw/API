@@ -7,8 +7,10 @@
     <title>Locate Carwash</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS for map styling -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
+        /* Styling for the map container */
         #map {
             height: 600px;
             width: 100%;
@@ -17,6 +19,7 @@
 </head>
 
 <body>
+    <!-- Navigation bar -->
     <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand" href="homepage/index.html">CleanConnect</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +37,13 @@
         </div>
     </nav>
 
+    <!-- Main content container -->
     <div class="container mt-4">
         <h2>Locate Carwash</h2>
+        <!-- Map container -->
         <div id="map"></div>
+        <!-- Error message container -->
+        <div id="error-message" class="alert alert-danger mt-3" style="display: none;"></div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
@@ -44,33 +51,48 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Leaflet JS -->
+    <!-- Leaflet JS for interactive maps -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
+        // Function to initialize the map
         function initMap() {
-            const locations = [
-                { lat: 14.0758, lng: 120.6200, name: 'Carwash 1' }, // Nasugbu, Batangas location 1
-                { lat: 14.0718, lng: 120.6260, name: 'Carwash 2' }, // Nasugbu, Batangas location 2
-                { lat: 14.0798, lng: 120.6220, name: 'Carwash 3' }  // Nasugbu, Batangas location 3
-            ];
+            try {
+                // Array of carwash locations with latitude, longitude, and name
+                const locations = [
+                    { lat: 14.0758, lng: 120.6200, name: 'Carwash 1' }, // Nasugbu, Batangas location 1
+                    { lat: 14.0718, lng: 120.6260, name: 'Carwash 2' }, // Nasugbu, Batangas location 2
+                    { lat: 14.0798, lng: 120.6220, name: 'Carwash 3' }  // Nasugbu, Batangas location 3
+                ];
 
-            const map = L.map('map').setView([locations[0].lat, locations[0].lng], 14);
+                // Initialize the map and set the view to the first location
+                const map = L.map('map').setView([locations[0].lat, locations[0].lng], 14);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+                // Add OpenStreetMap tiles to the map
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
 
-            locations.forEach(location => {
-                const marker = L.marker([location.lat, location.lng]).addTo(map)
-                    .bindPopup(location.name)
-                    .openPopup();
+                // Add markers for each location
+                locations.forEach(location => {
+                    const marker = L.marker([location.lat, location.lng]).addTo(map)
+                        .bindPopup(location.name)
+                        .openPopup();
 
-                marker.on('click', () => {
-                    window.location.href = 'booking.html#vehicle-type';
+                    // Redirect to booking page when a marker is clicked
+                    marker.on('click', () => {
+                        window.location.href = 'booking.html#vehicle-type';
+                    });
                 });
-            });
+            } catch (error) {
+                // Log any errors to the console
+                console.error('An error occurred:', error);
+                // Display an error message to the user
+                document.getElementById('error-message').textContent = 'Failed to load map. Please try again later.';
+                document.getElementById('error-message').style.display = 'block';
+            }
         }
 
+        // Initialize the map when the DOM content is fully loaded
         document.addEventListener('DOMContentLoaded', initMap);
     </script>
 </body>
